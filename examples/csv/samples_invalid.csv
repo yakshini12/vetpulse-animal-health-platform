@@ -1,0 +1,9 @@
+sample_code,case_number,sample_type,collection_date,status,lab_location,received_date,processing_started_date,completed_date,rejected_date,rejection_reason,result_status,result_summary,notes
+,BLOOD,2026-10-02,COMPLETED,Central reference lab,2026-10-02,2026-10-03,2026-10-06,,,RELEASED,Reference range check,,
+SP-2026-2002,CASE-2026-0002,SALIVA,2026-10-04,IN_PROCESS,Zone-1 diagnostics lab,2026-10-05,2026-10-06,,,,NOT,,
+SP-2026-2003,CASE-2026-0003,TISSUE,15/10/2026,IN_REVIEW,Zone-2 diagnostics lab,2026-10-07,2026-10-08,,,,PENDING,,
+SP-2026-2004,CASE-2026-0004,URINE,2099-01-01,RECEIVED,Field collection hub A,2026-10-09,,,,,,,
+SP-2026-2005,CASE-2026-0005,FECAL,2026-09-20,REJECTED,Zone-1 diagnostics lab,2026-09-21,2026-09-22,,2026-09-19,Damaged container.,NOT,,
+SP-2026-2006,CASE-2026-0006,MILK,2026-10-10,COMPLETED,Zone-2 diagnostics lab,2026-10-11,2026-10-12,,,,RELEASED,Synthetic assay,
+SP-2026-2007,CASE-2026-0007,BLOOD,2026-10-12,PENDING,Central reference lab,2026-10-13,,,,,,,
+SP-2026-2008,CASE-2026-0008,OTHER,2026-10-13,IN_REVIEW,Zone-1 diagnostics lab,2026-10-14,,,,,,NOTE_AVAILABLE,

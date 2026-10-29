@@ -1,0 +1,6 @@
+sample_code,case_number,sample_type,collection_date,status,lab_location,received_date,processing_started_date,completed_date,rejected_date,rejection_reason,result_status,result_summary,notes
+SP-2026-3001,CASE-2026-0001,BLOOD,2026-10-02,RECEIVED,Zone-1 diagnostics lab,2026-10-03,,,,,,,
+SP-2026-3001,CASE-2026-0001,BLOOD,2026-10-02,RECEIVED,Zone-1 diagnostics lab,2026-10-03,,,,,,,
+SP-2026-3002,CASE-2026-0002,SWAB,2026-10-04,RECEIVED,Zone-2 diagnostics lab,2026-10-05,,,,,,,
+SP-2026-3002,CASE-2026-0002,SWAB,2026-10-04,RECEIVED,Zone-2 diagnostics lab,2026-10-05,,,,,,,
+SP-2026-3003,CASE-2026-0003,TISSUE,2026-10-06,RECEIVED,Field collection hub A,2026-10-07,,,,,,,

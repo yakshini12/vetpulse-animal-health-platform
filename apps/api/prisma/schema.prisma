@@ -1,0 +1,217 @@
+// VetPulse data model.
+// Conventions:
+// - All identifiers are Prisma cuids; business-facing unique codes (case_number,
+//   sample_code) are generated in application code and enforced with unique constraints.
+// - Every sample belongs to exactly one case (FK), every task optionally links to a
+//   case and/or a sample, audit events reference targets by type + id (no FK so
+//   deleted records keep their audit history).
+// - Pseudonymous owner references: synthetic organisation codes, never personal data.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  STAFF
+}
+
+enum CaseStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum CasePriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum SampleStatus {
+  RECEIVED
+  IN_PROCESS
+  IN_REVIEW
+  COMPLETED
+  REJECTED
+}
+
+enum SampleType {
+  BLOOD
+  SWAB
+  TISSUE
+  URINE
+  FECAL
+  MILK
+  OTHER
+}
+
+enum ResultStatus {
+  NOT_AVAILABLE
+  PENDING
+  RELEASED
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+  CANCELLED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum ImportStatus {
+  PREVIEWED
+  COMMITTED
+  COMMIT_FAILED
+  FAILED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  role         Role     @default(STAFF)
+  passwordHash String
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  cases   AnimalCase[]  @relation("caseAssignee")
+  tasks   Task[]  @relation("taskAssignee")
+  audits  AuditEvent[]
+  imports ImportBatch[]
+}
+
+model AnimalCase {
+  id             String       @id @default(cuid())
+  caseNumber     String       @unique
+  title          String
+  species        String
+  breed          String?
+  ageMonths      Int?
+  ownerRef       String // pseudonymous organisation / owner code, e.g. "ORG-117"
+  concern        String
+  priority       CasePriority @default(MEDIUM)
+  // Integer mirror of priority for business-ordered sorting (CRITICAL=4 ... LOW=1).
+  priorityRank   Int          @default(2)
+  status         CaseStatus   @default(OPEN)
+  assignedToId   String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  closedAt       DateTime?
+
+  assignedTo User?   @relation("caseAssignee", fields: [assignedToId], references: [id])
+  samples    Sample[]
+  tasks      Task[]
+
+  @@index([status])
+  @@index([priority])
+  @@index([createdAt])
+  @@index([assignedToId])
+  @@index([species])
+}
+
+model Sample {
+  id             String       @id @default(cuid())
+  sampleCode     String       @unique
+  caseId         String
+  sampleType     SampleType
+  collectionDate DateTime
+  status         SampleStatus @default(RECEIVED)
+  labLocation    String
+  receivedAt     DateTime?
+  processingStartedAt DateTime?
+  completedAt    DateTime?
+  rejectedAt     DateTime?
+  rejectionReason String?
+  resultStatus   ResultStatus @default(NOT_AVAILABLE)
+  resultSummary  String? // synthetic, qualitative only - never a veterinary diagnosis
+  notes          String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  case AnimalCase @relation(fields: [caseId], references: [id])
+  tasks Task[]
+
+  @@index([status])
+  @@index([caseId])
+  @@index([collectionDate])
+  @@index([sampleType])
+}
+
+model Task {
+  id          String      @id @default(cuid())
+  title       String
+  description String?
+  status      TaskStatus  @default(TODO)
+  priority    TaskPriority @default(MEDIUM)
+  // Integer mirror of priority for business-ordered sorting (HIGH=3 ... LOW=1).
+  priorityRank Int         @default(2)
+  dueDate     DateTime
+  completedAt DateTime?
+  caseId      String?
+  sampleId    String?
+  assigneeId  String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  assignee User?        @relation("taskAssignee", fields: [assigneeId], references: [id])
+  case     AnimalCase?  @relation(fields: [caseId], references: [id])
+  sample   Sample?      @relation(fields: [sampleId], references: [id])
+
+  @@index([status])
+  @@index([assigneeId])
+  @@index([dueDate])
+  @@index([caseId])
+  @@index([sampleId])
+}
+
+model AuditEvent {
+  id         String   @id @default(cuid())
+  actorId    String?
+  actorName  String
+  eventType  String // e.g. CASE_CREATED, SAMPLE_TRANSITION, TASK_COMPLETED, IMPORT_COMMITTED
+  targetType String // CASE | SAMPLE | TASK | IMPORT_BATCH | USER
+  targetId   String
+  targetLabel String
+  summary    String // safe, human-readable summary; never contains credentials or tokens
+  meta       Json?
+  createdAt  DateTime @default(now())
+
+  actor User? @relation(fields: [actorId], references: [id])
+
+  @@index([createdAt])
+  @@index([targetType, targetId])
+  @@index([eventType])
+}
+
+model ImportBatch {
+  id             String       @id @default(cuid())
+  fileName       String
+  status         ImportStatus
+  totalRows      Int
+  validRows      Int          @default(0)
+  rejectedRows   Int          @default(0)
+  duplicateRows  Int          @default(0)
+  insertedRows   Int          @default(0)
+  report         Json? // full row-level python + database validation report
+  createdById    String
+  createdAt      DateTime     @default(now())
+  committedAt    DateTime?
+
+  createdBy User @relation(fields: [createdById], references: [id])
+
+  @@index([createdAt])
+}
