@@ -14,6 +14,8 @@ export function listQuerySchema(sortFields: readonly string[]) {
   });
 }
 
+export type ListQuery = z.infer<ReturnType<typeof listQuerySchema>>;
+
 export function paginated<T>(items: T[], total: number, query: { page: number; pageSize: number }) {
   return {
     items,
