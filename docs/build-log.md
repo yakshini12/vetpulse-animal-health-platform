@@ -11,13 +11,13 @@ affected; npm cache redirected to `D:\npm-cache`.
 
 | Phase | Outcome | Commit |
 | --- | --- | --- |
-| 1–4: backend + validator + planning | Express/Prisma API, Python validator, seed, tests | `1321a59` |
-| 5: web client | React SPA, all 8 modules usable | `3736c2d` |
-| 6: CI + screenshots | `.github/workflows/ci.yml`, captures | `4217dcc` |
+| 1–4: backend + validator + planning | Express/Prisma API, Python validator, seed, tests | `03ccf31` |
+| 5: web client | React SPA, all 8 modules usable | `6f62a76` |
+| 6: CI + screenshots | `.github/workflows/ci.yml`, captures | `8b02153` |
 
 ---
 
-## Phases 1–4 — backend, database, CSV validator (committed as `1321a59`)
+## Phases 1–4 — backend, database, CSV validator (committed as `03ccf31`)
 
 **Files:** `apps/api/**` (Express 4 + Zod + Prisma modular monolith),
 `data-service/vetpulse_csv/**` + 18 unittest tests, `examples/csv/*` (3 demo CSVs),
@@ -54,7 +54,7 @@ python -m vetpulse_csv.cli --file ../examples/csv/samples_invalid.csv   # CLI ro
 
 ---
 
-## Phase 5 — web client (commit `3736c2d`)
+## Phase 5 — web client (commit `6f62a76`)
 
 **Files:** full `apps/web/**` (Vite + React 19 + TS, custom CSS, react-router,
 Recharts), pages for Login, Dashboard, Cases/CaseDetail, Samples/SampleDetail,
@@ -98,7 +98,7 @@ row-level error table rendered with codes).
 
 ---
 
-## Phase 6/7 — CI, Docker, docs (commit `4217dcc`)
+## Phase 6/7 — CI, Docker, docs (commit `8b02153`)
 
 **Files:** `.github/workflows/ci.yml` (3 jobs: backend on `postgres:16` service +
 Python, web, data-service), `Dockerfile` (multi-stage: web build → api build →
