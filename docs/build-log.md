@@ -13,7 +13,7 @@ affected; npm cache redirected to `D:\npm-cache`.
 | --- | --- | --- |
 | 1–4: backend + validator + planning | Express/Prisma API, Python validator, seed, tests | `1321a59` |
 | 5: web client | React SPA, all 8 modules usable | `3736c2d` |
-| 6: CI + screenshots | `.github/workflows/ci.yml`, captures | this commit |
+| 6: CI + screenshots | `.github/workflows/ci.yml`, captures | `4217dcc` |
 
 ---
 
@@ -98,7 +98,7 @@ row-level error table rendered with codes).
 
 ---
 
-## Phase 6/7 — CI, Docker, docs (this commit)
+## Phase 6/7 — CI, Docker, docs (commit `4217dcc`)
 
 **Files:** `.github/workflows/ci.yml` (3 jobs: backend on `postgres:16` service +
 Python, web, data-service), `Dockerfile` (multi-stage: web build → api build →
